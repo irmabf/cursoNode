@@ -33,6 +33,12 @@ app.get('/api/courses/:id', (req, res) =>{
 
 // post to the collection of courses
 app.post('/api/courses', (req, res) => {
+  //adding some input validation logic for the client
+  if(!req.body.name || req.body.name.length < 3 ){
+    //400, bad request 
+    res.status(400).send('Name is required and should be minimum 3 characters');
+    return;
+  }
 
   const course = {
     id: courses.length + 1,
