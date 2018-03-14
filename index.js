@@ -1,3 +1,4 @@
+const Joi = require('joi');
 const express = require('express');
 const app = express();
 
@@ -33,11 +34,18 @@ app.get('/api/courses/:id', (req, res) =>{
 
 // post to the collection of courses
 app.post('/api/courses', (req, res) => {
-  //adding some input validation logic for the client
-  if(!req.body.name || req.body.name.length < 3 ){
+ //usin Joi class, (provided by joi module), for add input validation for the client
+  const schema = {
+    name: Joi.string().min(3).required()
+  };
+
+  const result = Joi.validate(req.body, schema);
+
+
+  if(result.error){
     //400, bad request 
-    res.status(400).send('Name is required and should be minimum 3 characters');
-    return;
+    res.status(400).send(result.error.details[0].message);
+    return; //we return because we dont want the rest of the function to get executed
   }
 
   const course = {
